@@ -1,0 +1,47 @@
+from flask import Flask, render_template
+import mysql.connector
+def get_db_connection():
+        return mysql.connector.connect(
+            host="localhost",
+            user = "root",
+            password = "2560065belal",
+            database = "media_stock"
+        )
+
+app = Flask(__name__)
+
+@app.route('/')
+def home():
+    mydb = get_db_connection()
+    mycursor = mydb.cursor()
+    # Example query to fetch total items
+    mycursor.execute("SELECT SUM(quantity) FROM items")
+    total_items = mycursor.fetchone()[0]
+    # Example query to fetch total categories
+    mycursor.execute("SELECT COUNT(DISTINCT category) FROM items")
+    total_categories = mycursor.fetchone()[0]
+    #Exmple query to fetch expired items
+    mycursor.execute("SELECT COUNT(*) FROM items WHERE expiry_date < CURDATE() - INTERVAL 30 DAY")
+    expired_items = mycursor.fetchone()[0]
+    #Example query to fetch out of stock items
+    mycursor.execute("SELECT COUNT(*) FROM items WHERE quantity= 0")
+    out_of_stock = mycursor.fetchone()[0]
+    mycursor.close()
+    mydb.close()
+    return render_template('dashboard.html', total_items=total_items, total_categories=total_categories, expired_items=expired_items, out_of_stock=out_of_stock)
+
+@app.route('/add')
+def add_item():
+    return render_template('add.html')
+
+@app.route('/view')
+def view_items():
+    mydb = get_db_connection()
+    mycursor = mydb.cursor()
+    mycursor.execute("SELECT name, quantity, category FROM items where quantity>0")
+    items = mycursor.fetchall()
+    mycursor.close()
+    return render_template('viewitem.html', items=items)
+if __name__ == '__main__':
+    app.run(debug=True)
+    
