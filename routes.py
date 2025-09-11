@@ -16,13 +16,13 @@ def home():
     mydb = get_db_connection()
     mycursor = mydb.cursor()
     # Example query to fetch total items
-    mycursor.execute("SELECT SUM(quantity) FROM items")
+    mycursor.execute("SELECT count(*) FROM items where quantity>0 and expiry_date > CURDATE()")
     total_items = mycursor.fetchone()[0]
     # Example query to fetch total categories
     mycursor.execute("SELECT COUNT(DISTINCT category) FROM items")
     total_categories = mycursor.fetchone()[0]
     #Exmple query to fetch expired items
-    mycursor.execute("SELECT COUNT(*) FROM items WHERE expiry_date < CURDATE() - INTERVAL 30 DAY")
+    mycursor.execute("SELECT COUNT(*) FROM items WHERE expiry_date < CURDATE() and quantity>0")
     expired_items = mycursor.fetchone()[0]
     #Example query to fetch out of stock items
     mycursor.execute("SELECT COUNT(*) FROM items WHERE quantity= 0")
@@ -55,7 +55,7 @@ def add_item():
 def view_items():
     mydb = get_db_connection()
     mycursor = mydb.cursor()
-    mycursor.execute("SELECT name, quantity, category, expiry_date FROM items where quantity>0 ORDER BY category ASC , name ASC")
+    mycursor.execute("SELECT name, quantity, category, expiry_date FROM items where quantity>0 and expiry_date >     CURDATE() ORDER BY category ASC , name ASC")
     items = mycursor.fetchall()
     mycursor.close()
     return render_template('viewitem.html', items=items)
@@ -68,6 +68,15 @@ def out_of_stock():
     items = mycursor.fetchall()
     mycursor.close()
     return render_template('outofstock.html', items=items)
+
+@app.route('/expireditems')
+def expired_items():
+    mydb = get_db_connection()
+    mycursor = mydb.cursor()
+    mycursor.execute("SELECT name, quantity, category, expiry_date FROM items where expiry_date < CURDATE() and quantity>0")
+    items = mycursor.fetchall()
+    mycursor.close()
+    return render_template('expireditems.html', items=items)
 
 if __name__ == '__main__':
     app.run(debug=True)
