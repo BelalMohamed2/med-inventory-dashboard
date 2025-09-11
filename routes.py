@@ -1,7 +1,8 @@
 from flask import Flask, render_template, request, redirect
 import mysql.connector
+import pymysql
 def get_db_connection():
-        return mysql.connector.connect(
+        return pymysql.connect(
             host="localhost",
             user = "root",
             password = "2560065belal",
@@ -54,7 +55,7 @@ def add_item():
 def view_items():
     mydb = get_db_connection()
     mycursor = mydb.cursor()
-    mycursor.execute("SELECT name, quantity, category FROM items where quantity>0")
+    mycursor.execute("SELECT name, quantity, category, expiry_date FROM items where quantity>0")
     items = mycursor.fetchall()
     mycursor.close()
     return render_template('viewitem.html', items=items)
