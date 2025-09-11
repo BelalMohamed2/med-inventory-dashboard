@@ -34,7 +34,7 @@ def home():
 @app.route('/add', methods=['GET', 'POST'])
 def add_item():
     if request.method  == 'POST':
-        name = request.form['name']
+        name = request.form['name'].capitalize()
         quantity = request.form['quantity']
         category = request.form['category']
         expiry_date = request.form['expiry_date']
@@ -55,7 +55,7 @@ def add_item():
 def view_items():
     mydb = get_db_connection()
     mycursor = mydb.cursor()
-    mycursor.execute("SELECT name, quantity, category, expiry_date FROM items where quantity>0")
+    mycursor.execute("SELECT name, quantity, category, expiry_date FROM items where quantity>0 ORDER BY category ASC , name ASC")
     items = mycursor.fetchall()
     mycursor.close()
     return render_template('viewitem.html', items=items)
