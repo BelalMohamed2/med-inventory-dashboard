@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, redirect
 import mysql.connector
 def get_db_connection():
         return mysql.connector.connect(
@@ -30,8 +30,24 @@ def home():
     mydb.close()
     return render_template('dashboard.html', total_items=total_items, total_categories=total_categories, expired_items=expired_items, out_of_stock=out_of_stock)
 
-@app.route('/add')
+@app.route('/add', methods=['GET', 'POST'])
 def add_item():
+    if request.method  == 'POST':
+        name = request.form['name']
+        quantity = request.form['quantity']
+        category = request.form['category']
+        expiry_date = request.form['expiry_date']
+        mydb = get_db_connection()
+        mycursor = mydb.cursor()
+        sql = "INSERT INTO items (name, quantity, category, expiry_date) VALUES (%s, %s, %s, %s)"
+        val = (name, quantity, category, expiry_date)
+        mycursor.execute(sql, val)
+        mydb.commit()
+        mycursor.close()
+        mydb.close()
+        return redirect('/view')
+    mydb = get_db_connection()
+    mycursor = mydb.cursor()
     return render_template('add.html')
 
 @app.route('/view')
