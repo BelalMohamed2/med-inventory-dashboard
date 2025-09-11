@@ -59,6 +59,16 @@ def view_items():
     items = mycursor.fetchall()
     mycursor.close()
     return render_template('viewitem.html', items=items)
+
+@app.route('/outofstock')
+def out_of_stock():
+    mydb = get_db_connection()
+    mycursor = mydb.cursor()
+    mycursor.execute("SELECT name, quantity, category, expiry_date FROM items where quantity=0")
+    items = mycursor.fetchall()
+    mycursor.close()
+    return render_template('outofstock.html', items=items)
+
 if __name__ == '__main__':
     app.run(debug=True)
     

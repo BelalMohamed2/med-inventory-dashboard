@@ -2,15 +2,18 @@
 {%block content%}
 <div class="grid">
         <a href="/view" >
-            <div class="card"  href="/view">
+            <div class="card" >
                 <h3>Total Items</h3>
                 <p>{{total_items}}</p>
             </div>
         </a>
-            <div class="card">
+        <a href="/outofstock">
+            <div class="card" href="/outofstock">
                 <h3>Out of Stock</h3>
                 <p>{{out_of_stock}}</p>
             </div>
+        </a>
+            
             <div class="card">
                 <h3>Expired Items</h3>
                 <p>{{expired_items}}</p>
