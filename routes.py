@@ -1,5 +1,4 @@
 from flask import Flask, render_template, request, redirect
-import mysql.connector
 import pymysql
 def get_db_connection():
         return pymysql.connect(
@@ -86,30 +85,28 @@ def itemdetails(item_id):
     mycursor.execute("SELECT name, quantity, category, expiry_date , id FROM items where expiry_date > CURDATE() and quantity>0 and id=%s", (item_id,))
     items = mycursor.fetchone()
     if request.method == 'POST':
-        quantity = int (request.form['quantity'])
         action = request.form['action']
         if action == 'add':
+            quantity = int (request.form['quantity'])
             sql = "UPDATE items SET quantity = quantity + %s WHERE id = %s"
             val = (quantity, item_id)
             mycursor.execute(sql, val)
         elif action == 'remove':
+            quantity = int (request.form['quantity'])
             sql = "UPDATE items SET quantity = quantity - %s WHERE id = %s"
             val = (quantity, item_id)
+            mycursor.execute(sql, val)
+        elif action == 'delete':
+            sql = "DELETE FROM items WHERE id = %s"
+            val = (item_id)
             mycursor.execute(sql, val)
         mydb.commit()
         return redirect('/view')
 
     mycursor.close()
     return render_template('itemdetalis.html', items=items)
-# def item_detail(item_id):
-#     mydb = get_db_connection()
-#     mycursor = mydb.cursor()
-#     sql = "SELECT * FROM items WHERE id = %s"
-#     val = (item_id,)
-#     mycursor.execute(sql, val)
-#     item = mycursor.fetchone()
-#     mycursor.close()
-#     return render_template('itemdetalis.html', item=item)
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)
