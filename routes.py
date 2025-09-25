@@ -39,6 +39,17 @@ def add_item():
         expiry_date = request.form['expiry_date']
         mydb = get_db_connection()
         mycursor = mydb.cursor()
+        mycursor.execute("SELECT name, quantity, category, expiry_date, id FROM items where quantity>0 and expiry_date > CURDATE() ORDER BY category ASC , name ASC")
+        items = mycursor.fetchone()
+        if name == items[0] :
+            new_quantity = items[1] + int(quantity)
+            sql = "UPDATE items SET quantity = %s WHERE name = %s"
+            val = (new_quantity, name)
+            mycursor.execute(sql, val)
+            mydb.commit()
+            mycursor.close()
+            mydb.close()
+            return redirect('/view')
         sql = "INSERT INTO items (name, quantity, category, expiry_date) VALUES (%s, %s, %s, %s)"
         val = (name, quantity, category, expiry_date)
         mycursor.execute(sql, val)
