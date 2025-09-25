@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}{{ items[0] }} | Media Inventory Dashboard{% endblock %}
+{% block content %}
+<div class="form-card">
+    <h2>Manage Item: {{ items[0] }}</h2>
+
+    <!-- Show current details -->
+    <div class="item-info">
+        <p><strong>ID:</strong> {{ items[4] }}</p>
+        <p><strong>Name:</strong> {{ items[0] }}</p>
+        <p><strong>Category:</strong> {{ items[1] }}</p>
+        <p><strong>Quantity:</strong> {{ items[2] }}</p>
+        <p><strong>Expiry Date:</strong> {{ items[3] }}</p>
+    </div>
+    <!-- Form to add or remove quantity -->
+    <form method="post" action="">
+    <div>
+        <label for="quantity">Quantity to Add/Remove:</label>
+        <input type="number" id="quantity" name="quantity" required>
+    </div>
+    <div class="form-actions">
+        <button type="submit" name="action" value="add">Add to Stock</button>
+        <button type="submit" name="action" value="remove">Remove from Stock</button> 
+        <a href="/" class="btn">Back To Inventory</a>
+
+    </div>
+</form>
+
+   
+</div>
+{% endblock %}

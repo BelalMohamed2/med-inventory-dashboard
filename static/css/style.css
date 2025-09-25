@@ -155,25 +155,18 @@
         }
 
         label {
+            font-weight: bold;
             margin-bottom: 5px;
-            color: #555;
-        }
-        select {
-            padding: 10px;
-            margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 16px;
-            background-color: white;
             color: #333;
-        }
-        
+            font-size: medium;
 
-        input[type="text"], input[type="number"], [type="date"] {
+        }
+
+        input[type="text"], input[type="number"], input[type="date"], select {
             padding: 10px;
             margin-bottom: 15px;
             border: 1px solid #ccc;
-            border-radius: 4px;
+            border-radius: 15px;
             font-size: 16px;
         }
 
@@ -201,4 +194,14 @@
         a {
             text-decoration: none;
             color: white;
+        }
+        .form-actions {
+            justify-content: space-evenly;
+            display: flex;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            row-gap: 15px;
+        }
+        .form-actions button , .btn {
+            width: 200px;
         }

@@ -4,6 +4,7 @@ Dashboard{% endblock %} {% block content %}
   <h1 class="inventory-title">Inventory</h1>
   <div class="inventory-list">
     {% for item in items %}
+    <a href="/item/{{item[4]}}">
     <div class="item-container">
       <div class="item-row">
         <div class="item-name"><strong>{{item[0]}}</strong></div>
@@ -14,6 +15,7 @@ Dashboard{% endblock %} {% block content %}
         </div>
       </div>
     </div>
+    </a>
     {% endfor %}
 
     <a href="/" class="btn" style="position: relative; top: -34px"
