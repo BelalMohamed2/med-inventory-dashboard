@@ -60,10 +60,10 @@ CREATE TABLE items (
 );
 SQLite version works with the same schema (without AUTO_INCREMENT).
 
-📂 Project Structure
-csharp
-Copy code
+## 📂 Project Structure
+```plaintext
 medical-inventory/
+│── app.py
 │── routes.py
 │── requirements.txt
 │── README.md
@@ -71,14 +71,15 @@ medical-inventory/
 │── static/
 │    └── style.css
 │── templates/
-│    ├── base.html
-│    ├── index.html
 │    ├── add.html
-│    └── itemdetails.html
+│    ├── base.html
+│    ├── dashboard.html
+│    ├── expireditems.html
+│    ├── itemdetails.html
+│    ├── outofstock.html
+│    └── viewitem.html
 │── docs/
 │    └── images/
-📦 Requirements
-See requirements.txt for the full list.
 
 Main dependencies:
 
