@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect
 import pymysql
+from datetime import date
 def get_db_connection():
         return pymysql.connect(
             host="localhost",
@@ -39,24 +40,29 @@ def add_item():
         expiry_date = request.form['expiry_date']
         mydb = get_db_connection()
         mycursor = mydb.cursor()
-        mycursor.execute("SELECT name, quantity, category, expiry_date, id FROM items where quantity>0 and expiry_date > CURDATE() ORDER BY category ASC , name ASC")
-        items = mycursor.fetchone()
-        if name == items[0] :
-            new_quantity = items[1] + int(quantity)
-            sql = "UPDATE items SET quantity = %s WHERE name = %s"
-            val = (new_quantity, name)
+        mycursor.execute("SELECT quantity, expiry_date FROM items where name = %s", (name,))
+        value = mycursor.fetchone()
+        if value :
+            if value[1] > date.today():
+                new_quantity = value[0] + int(quantity)
+                sql = "UPDATE items SET quantity = %s, category = %s, expiry_date = %s WHERE name = %s"
+                val = (new_quantity, category, expiry_date, name)
+            else:
+                sql = "UPDATE items SET quantity = %s, category = %s, expiry_date = %s WHERE name = %s"
+                val = (quantity, category, expiry_date, name)
             mycursor.execute(sql, val)
             mydb.commit()
             mycursor.close()
             mydb.close()
             return redirect('/view')
-        sql = "INSERT INTO items (name, quantity, category, expiry_date) VALUES (%s, %s, %s, %s)"
-        val = (name, quantity, category, expiry_date)
-        mycursor.execute(sql, val)
-        mydb.commit()
-        mycursor.close()
-        mydb.close()
-        return redirect('/view')
+        else:
+            sql = "INSERT INTO items (name, quantity, category, expiry_date) VALUES (%s, %s, %s, %s)"
+            val = (name, quantity, category, expiry_date)
+            mycursor.execute(sql, val)
+            mydb.commit()
+            mycursor.close()
+            mydb.close()
+            return redirect('/view')
     mydb = get_db_connection()
     mycursor = mydb.cursor()
     return render_template('add.html')
@@ -83,7 +89,7 @@ def out_of_stock():
 def expired_items():
     mydb = get_db_connection()
     mycursor = mydb.cursor()
-    mycursor.execute("SELECT name, quantity, category, expiry_date FROM items where expiry_date < CURDATE() and quantity>0")
+    mycursor.execute("SELECT name, quantity, category, expiry_date, id FROM items where expiry_date < CURDATE() and quantity>0")
     items = mycursor.fetchall()
     
     mycursor.close()
@@ -93,18 +99,19 @@ def expired_items():
 def itemdetails(item_id):
     mydb = get_db_connection()
     mycursor = mydb.cursor()
-    mycursor.execute("SELECT name, quantity, category, expiry_date , id FROM items where expiry_date > CURDATE() and quantity>0 and id=%s", (item_id,))
+    mycursor.execute("SELECT name, quantity, category, expiry_date , id FROM items where  quantity>0 and id=%s", (item_id,))
     items = mycursor.fetchone()
+    print (items[3])
     if request.method == 'POST':
         action = request.form['action']
         if action == 'add':
             quantity = int (request.form['quantity'])
-            sql = "UPDATE items SET quantity = quantity + %s WHERE id = %s"
+            sql = "UPDATE items SET quantity = quantity + %s WHERE expiry_date > CURDATE() and id = %s"
             val = (quantity, item_id)
             mycursor.execute(sql, val)
         elif action == 'remove':
             quantity = int (request.form['quantity'])
-            sql = "UPDATE items SET quantity = quantity - %s WHERE id = %s"
+            sql = "UPDATE items SET quantity = quantity - %s WHERE expiry_date > CURDATE() and id = %s"
             val = (quantity, item_id)
             mycursor.execute(sql, val)
         elif action == 'delete':

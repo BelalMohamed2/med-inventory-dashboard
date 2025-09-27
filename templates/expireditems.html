@@ -3,18 +3,20 @@
 <div class="inventory-container">
     <h1 class="inventory-title">Expired Items</h1>
     <div class="inventory-list">
-        {% for item in items %}
-        <div class="item-container">
-        <div class="item-row">
-            <div class="item-name"><strong>{{item[0]}}</strong></div>
-            <div class="item-details">
-            <p>Quantity: {{item[1]}}</p>
-            <p>Catergory:{{item[2]}}</p>
-            <p>Expiry Date: {{item[3]}}</p>
+    {% for item in items %}
+        <a href="/item/{{item[4]}}">
+            <div class="item-container">
+                <div class="item-row">
+                    <div class="item-name"><strong>{{item[0]}}</strong></div>
+                    <div class="item-details">
+                    <p>Quantity: {{item[1]}}</p>
+                    <p>Catergory:{{item[2]}}</p>
+                    <p>Expiry Date: {{item[3]}}</p>
+                    </div>
+                </div>
             </div>
-        </div>
-        </div>
-        {% endfor %}
+        </a>        
+    {% endfor %}
 
         <a href="/" class="btn" style="position: relative; top: -34px"
         >Back To Inventory</a
