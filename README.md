@@ -16,8 +16,6 @@ Built with **Flask, Python, and MySQL/SQLite**.
 ---
 
 ## 📸 Snapshots
-Place your screenshots in `docs/images/` and update paths below:
-
 ![Dashboard](docs/images/dashboard.png)  
 ![View Items](docs/images/view_items.png)  
 ![Out Of Stock](docs/images/out_of_stock.png)  
